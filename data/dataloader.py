@@ -82,13 +82,17 @@ class ImageDataset(Dataset):
 
         path = self.dataset_path+'/'+filename+'.png'
         raw_image = cv2.imread(path)
-        noisy_image = noise_mask_image(raw_image)
 
-        # mirror the inputs
-        mirror = True if random.uniform(0.0, 1.0) > 0.5 else False
-        if mirror:
+        # mirror the inputs for data augmentation
+        horizontal_mirror = True if random.uniform(0.0, 1.0) > 0.5 else False
+        vertical_mirror = True if random.uniform(0.0, 1.0) > 0.5 else False
+        if horizontal_mirror:
             raw_image = raw_image[:, ::-1, :]
-            noisy_image = noisy_image[:, ::-1, :]
+        if vertical_mirror:
+            raw_image = raw_image[::-1, :, :]
+
+        noisy_image = noise_mask_image(raw_image)
+        
 
         raw_image = Image.fromarray(raw_image.astype('uint8')).convert('RGB')
         noisy_image = Image.fromarray(noisy_image.astype('uint8')).convert('RGB')
@@ -99,7 +103,7 @@ class ImageDataset(Dataset):
         if not self.eval_mode:
             return {'image': image, 'label': label}
         else:
-            return {'image': image, 'label': label, 'filename': filename, 'index': index, 'mirror': mirror}
+            return {'image': image, 'label': label, 'filename': filename, 'index': index, 'mirror': (horizontal_mirror,vertical_mirror)}
 
     def __len__(self):
         return len(self.filenames)
