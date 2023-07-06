@@ -78,7 +78,10 @@ class ImageDataset(Dataset):
         self.filenames = get_filelist(self.dataset_path)
 
     def __getitem__(self, index):
-        filename = self.filenames[index]
+        if not self.eval_mode:
+            filename = random.choice(self.filenames) # 训练则随机取样 防止局部震荡
+        else:
+            filename = self.filenames[index]
 
         path = self.dataset_path+'/'+filename+'.png'
         raw_image = cv2.imread(path)
@@ -92,7 +95,7 @@ class ImageDataset(Dataset):
             raw_image = raw_image[::-1, :, :]
 
         noisy_image = noise_mask_image(raw_image)
-        
+
         raw_image = Image.fromarray(raw_image.astype('uint8')).convert('RGB')
         noisy_image = Image.fromarray(noisy_image.astype('uint8')).convert('RGB')
 
