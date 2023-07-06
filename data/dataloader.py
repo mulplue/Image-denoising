@@ -82,7 +82,7 @@ class ImageDataset(Dataset):
         filename = self.filenames[index]
 
         path = self.dataset_path+'/'+filename+'.png'
-        print(path)
+        # print(path)
         raw_image = cv2.imread(path)
         noisy_image = noise_mask_image(raw_image)
 
