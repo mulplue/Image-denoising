@@ -93,7 +93,6 @@ class ImageDataset(Dataset):
 
         noisy_image = noise_mask_image(raw_image)
         
-
         raw_image = Image.fromarray(raw_image.astype('uint8')).convert('RGB')
         noisy_image = Image.fromarray(noisy_image.astype('uint8')).convert('RGB')
 
