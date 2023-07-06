@@ -69,7 +69,7 @@ class ImageDataset(Dataset):
         img_transforms = [
             transforms.Resize(self.size, Image.BICUBIC),
             transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
         ]
 
         self.img_transforms = transforms.Compose(img_transforms)
