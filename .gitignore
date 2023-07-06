@@ -3,3 +3,6 @@
 #vscode
 *.code-workspace
 /.history/
+
+#train
+result/
