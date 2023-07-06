@@ -19,8 +19,6 @@ def noise_mask_image(img, noise_ratio=[0.8,0.4,0.6]):
             for j in range(img.shape[1]):
                 if random.random() < noise_ratio[k]:  # 如果生成的随机数小于噪声比例则将该像素点添加黑点
                     noise_img[i][j][k] = 0  # 1 / 0
-                elif random.random() > 1-noise_ratio[k]:
-                    noise_img[i][j][k] = 255  # 1 / 0
                 else:
                     noise_img[i][j][k] = img[i][j][k]
     
