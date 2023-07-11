@@ -38,7 +38,7 @@ def get_filelist(path):
 
 
 class ImageDataset(Dataset):
-    def __init__(self, dataset_path, eval_mode=False, size=(256, 512), group=10):
+    def __init__(self, dataset_path, eval_mode=False, size=(256, 512), index=[0,1,2,3,4]):
         self.eval_mode = eval_mode
         self.size = size
 
@@ -52,7 +52,7 @@ class ImageDataset(Dataset):
 
         self.dataset_path = dataset_path
         self.filenames = get_filelist(self.dataset_path+'\\original_png\\')
-        self.group = group
+        self.index = index
 
     def __getitem__(self, index):
         if not self.eval_mode:
@@ -62,7 +62,7 @@ class ImageDataset(Dataset):
         path = self.dataset_path+'\\original_png\\'+filename+'.png'
         raw_image = cv2.imread(path)
         
-        path = self.dataset_path+'\\noisy\\10\\'+str(random.randint(0,self.group-1))+'_'+filename+'.png'
+        path = self.dataset_path+'\\noisy\\10\\'+str(random.choice(self.index))+'_'+filename+'.png'
         noisy_image = cv2.imread(path)
 
         # mirror the inputs for data augmentation
@@ -91,7 +91,7 @@ class ImageDataset(Dataset):
         return len(self.filenames)
     
 if __name__ == '__main__':
-    test_loader = DataLoader(ImageDataset(dataset_path=r'.\dataset\CBSD68',eval_mode=True), batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
+    test_loader = DataLoader(ImageDataset(dataset_path=r'.\dataset\CBSD68',eval_mode=True,index=[0,1,2,3,4,5,6,7]), batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
     # 'E:/Study/Technology/AI/github/Image-denoising/dataset/CBSD68/original_png'
 
     for i, batch in enumerate(test_loader):
