@@ -19,8 +19,8 @@ def get_imgs(dataset_dir):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--original_path', type=str, default='../dataset/CBSD68/original_png/', help="dataset path")
-    parser.add_argument('--output_path', type=str, default='../dataset/CBSD68/noisy/', help="dataset path")
+    parser.add_argument('--original_path', type=str, default='./dataset/CBSD68/original_png/', help="dataset path")
+    parser.add_argument('--output_path', type=str, default='./dataset/CBSD68/noisy/', help="dataset path")
     parser.add_argument('--seed', type=int, default=666, help="random seed")
     parser.add_argument('--n', type=int, default=1, help="generate noisy images for n times")
     parser.add_argument('--r_ratio', type=float, default=0.4, help="noise ratio of R channel")
