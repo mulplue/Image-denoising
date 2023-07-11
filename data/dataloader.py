@@ -84,7 +84,7 @@ class ImageDataset(Dataset):
         return len(self.filenames)
     
 if __name__ == '__main__':
-    test_loader = DataLoader(ImageDataset(dataset_path=r'.\dataset\CBSD68\original_png',eval_mode=True), batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
+    test_loader = DataLoader(ImageDataset(dataset_path=r'.\dataset\example',eval_mode=True), batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
     # 'E:/Study/Technology/AI/github/Image-denoising/dataset/CBSD68/original_png'
 
     for i, batch in enumerate(test_loader):
