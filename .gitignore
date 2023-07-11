@@ -1,8 +1,11 @@
 *.pyc
 
-#vscode
+# vscode
 *.code-workspace
 /.history/
 
-#train
+# train
 result/
+
+# dataset
+dataset/CBSD68/noisy/

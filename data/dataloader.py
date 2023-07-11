@@ -16,9 +16,10 @@ np.set_printoptions(suppress=True, precision=4, linewidth=65535)
 import matplotlib.pyplot as plt
 
 import sys
-sys.path.append(r'E:\Study\Technology\AI\github\Image-denoising')
+sys.path.append('../')
 # print(sys.path)
 from utils.add_noise import noise_mask_image
+
 
 def get_filelist(path):
     files = glob.glob(path + '/*.png')
@@ -84,8 +85,8 @@ class ImageDataset(Dataset):
         return len(self.filenames)
     
 if __name__ == '__main__':
-    test_loader = DataLoader(ImageDataset(dataset_path=r'.\dataset\CBSD68\original_png',eval_mode=True), batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
-    # 'E:/Study/Technology/AI/github/Image-denoising/dataset/CBSD68/original_png'
+    train_loader = DataLoader(ImageDataset(dataset_path='./dataset/CBSD68/original_png',eval_mode=True), batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
+    test_loader = DataLoader(ImageDataset(dataset_path='./dataset/CBSD68/original_png',eval_mode=True), batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
 
     for i, batch in enumerate(test_loader):
         image = batch['image'][0]
@@ -95,9 +96,9 @@ if __name__ == '__main__':
         print("mirror:", batch['mirror'][0])
 
 
-        cv2.imshow("Image", image.permute(1, 2, 0).numpy())
-        cv2.imshow("Label", label.permute(1, 2, 0).numpy())
-        cv2.waitKey(0)
+    #     cv2.imshow("Image", image.permute(1, 2, 0).numpy())
+    #     cv2.imshow("Label", label.permute(1, 2, 0).numpy())
+    #     cv2.waitKey(0)
 
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
 
