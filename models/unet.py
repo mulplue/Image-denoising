@@ -46,7 +46,7 @@ class UNetUp(nn.Module):
     """
     def __init__(self, in_size, out_size, kernel_size=4, stride=2, padding=1, dropout=0.0):
         super(UNetUp, self).__init__()
-        layers = [nn.Conv2d(in_size, out_size, kernel_size=kernel_size, stride=stride, padding=padding, bias=False),
+        layers = [nn.ConvTranspose2d(in_size, out_size, kernel_size=kernel_size, stride=stride, padding=padding, bias=False),
                   nn.InstanceNorm2d(out_size),
                   nn.ReLU(inplace=True)]
         if dropout:  # 是否Dropout
@@ -74,27 +74,27 @@ class UNet(nn.Module):
     def __init__(self, in_channels=3, out_channels=3):
         super(UNet, self).__init__()
         # 定义encoder
-        self.down1 = UNetDown(in_channels, 64, normalize=False)
-        self.down2 = UNetDown(64, 128)
-        self.down3 = UNetDown(128, 256)
-        self.down4 = UNetDown(256, 512, dropout=0.5)
-        self.down5 = UNetDown(512, 512, dropout=0.5)
-        self.down6 = UNetDown(512, 512, dropout=0.5)
-        self.down7 = UNetDown(512, 512, normalize=False, dropout=0.5)
+        self.down1 = UNetDown(in_channels, 16, normalize=False)
+        self.down2 = UNetDown(16, 32)
+        self.down3 = UNetDown(32, 64)
+        self.down4 = UNetDown(64, 128, dropout=0.5)
+        self.down5 = UNetDown(128, 256, dropout=0.5)
+        self.down6 = UNetDown(256, 256, dropout=0.5)
+        self.down7 = UNetDown(256, 256, normalize=False, dropout=0.5)
 
         # 定义decoder
-        self.up1 = UNetUp(512, 512, dropout=0.5)
-        self.up2 = UNetUp(1024, 512, dropout=0.5)
-        self.up3 = UNetUp(1024, 512, dropout=0.5)
-        self.up4 = UNetUp(1024, 256)
-        self.up5 = UNetUp(512, 128)
-        self.up6 = UNetUp(256, 64)
+        self.up1 = UNetUp(256, 256, dropout=0.5)
+        self.up2 = UNetUp(512, 256, dropout=0.5)
+        self.up3 = UNetUp(512, 128, dropout=0.5)
+        self.up4 = UNetUp(256, 64)
+        self.up5 = UNetUp(128, 32)
+        self.up6 = UNetUp(64, 16)
 
         # 定义输出
         self.final = nn.Sequential(
             nn.Upsample(scale_factor=2),
             nn.ZeroPad2d((1, 0, 1, 0)),
-            nn.Conv2d(128, out_channels, 4, padding=1),
+            nn.Conv2d(32, out_channels, 4, padding=1),
             nn.Tanh()
         )
 
@@ -126,18 +126,21 @@ class ForwardRemover(nn.Module):
         ----------------------------------------------------------------------------
         Input:
         :param N:4D torch.tensor:( batch_size * RGB * Width * Height )
-        Width and Height are 256 and 128
+        Width and Height are 256 and 128 or uncertainy
         ----------------------------------------------------------------------------
         Output:
         :return I:4D torch.tensor:(batch_size * RGB * Width * Height)
     """
-    def __init__(self, in_channels=3, out_channels=3):
+    def __init__(self, in_channels=3, out_channels=3, scale=10):
         super(ForwardRemover, self).__init__()
         # 定义encoder
         self.model = UNet(in_channels=in_channels, out_channels=out_channels)
+        self.scale = scale
 
     def forward(self, x):
+        x = x/self.scale
         x = self.model(x)
+        x = x*self.scale
         return x
 
 
@@ -149,17 +152,21 @@ class ResRemover(nn.Module):
         ----------------------------------------------------------------------------
         Input:
         :param N:4D torch.tensor:(batch_size * RGB * Width * Height)
-        Width and Height are 256 and 128
+        Width and Height are 256 and 128 or uncertainy
         ----------------------------------------------------------------------------
         Output:
         :return I:4D torch.tensor:(batch_size * RGB * Width * Height)
     """
-    def __init__(self, in_channels=3, out_channels=3):
+    def __init__(self, in_channels=3, out_channels=3, scale=10):
         super(ResRemover, self).__init__()
         # 定义encoder
         self.model = UNet(in_channels=in_channels, out_channels=out_channels)
+        self.scale = scale
+
 
     def forward(self, x):
+        x = x/self.scale
         noise = self.model(x)
         x = x+noise# Plus is equal to minus? For tanh is used
+        x = x*self.scale
         return x
