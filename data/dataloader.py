@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 
 import sys
 sys.path.append('../')
+sys.path.append("E:\Study\Technology\AI\github\Image-denoising")
+
 # print(sys.path)
 from utils.add_noise import noise_mask_image
 
@@ -36,7 +38,7 @@ def get_filelist(path):
 
 
 class ImageDataset(Dataset):
-    def __init__(self, dataset_path, eval_mode=False, size=(256, 512)):
+    def __init__(self, dataset_path, eval_mode=False, size=(256, 512), index=[0,1,2,3,4]):
         self.eval_mode = eval_mode
         self.size = size
 
@@ -49,26 +51,30 @@ class ImageDataset(Dataset):
         self.img_transforms = transforms.Compose(img_transforms)
 
         self.dataset_path = dataset_path
-        self.filenames = get_filelist(self.dataset_path)
+        self.filenames = get_filelist(self.dataset_path+'\\original_png\\')
+        self.index = index
 
     def __getitem__(self, index):
         if not self.eval_mode:
             filename = random.choice(self.filenames) # 训练则随机取样 防止局部震荡
         else:
             filename = self.filenames[index]
-
-        path = self.dataset_path+'\\'+filename+'.png'
+        path = self.dataset_path+'\\original_png\\'+filename+'.png'
         raw_image = cv2.imread(path)
+        
+        path = self.dataset_path+'\\noisy\\10\\'+str(random.choice(self.index))+'_'+filename+'.png'
+        noisy_image = cv2.imread(path)
 
         # mirror the inputs for data augmentation
         horizontal_mirror = True if random.uniform(0.0, 1.0) > 0.5 else False
         vertical_mirror = True if random.uniform(0.0, 1.0) > 0.5 else False
         if horizontal_mirror:
             raw_image = raw_image[:, ::-1, :]
+            noisy_image = noisy_image[:, ::-1, :]
+
         if vertical_mirror:
             raw_image = raw_image[::-1, :, :]
-
-        noisy_image = noise_mask_image(raw_image)
+            noisy_image = noisy_image[::-1, :, :]
 
         raw_image = Image.fromarray(raw_image.astype('uint8')).convert('RGB')
         noisy_image = Image.fromarray(noisy_image.astype('uint8')).convert('RGB')
@@ -85,8 +91,8 @@ class ImageDataset(Dataset):
         return len(self.filenames)
     
 if __name__ == '__main__':
-    train_loader = DataLoader(ImageDataset(dataset_path='./dataset/CBSD68/original_png',eval_mode=True), batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
-    test_loader = DataLoader(ImageDataset(dataset_path='./dataset/CBSD68/original_png',eval_mode=True), batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
+    test_loader = DataLoader(ImageDataset(dataset_path=r'.\dataset\CBSD68',eval_mode=True,index=[0,1,2,3,4,5,6,7]), batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
+    # 'E:/Study/Technology/AI/github/Image-denoising/dataset/CBSD68/original_png'
 
     for i, batch in enumerate(test_loader):
         image = batch['image'][0]
@@ -96,9 +102,9 @@ if __name__ == '__main__':
         print("mirror:", batch['mirror'][0])
 
 
-    #     cv2.imshow("Image", image.permute(1, 2, 0).numpy())
-    #     cv2.imshow("Label", label.permute(1, 2, 0).numpy())
-    #     cv2.waitKey(0)
+        cv2.imshow("Image", image.permute(1, 2, 0).numpy())
+        cv2.imshow("Label", label.permute(1, 2, 0).numpy())
+        cv2.waitKey(0)
 
-    # cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
 

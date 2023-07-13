@@ -9,3 +9,6 @@ result/
 
 # dataset
 dataset/CBSD68/noisy/
+
+# figure
+*.png
