@@ -5,6 +5,7 @@ import sys
 import os
 from tqdm import tqdm, trange
 sys.path.append("../")
+sys.path.append("./")
 
 from utils.add_noise import noise_mask_image
 from utils.utils import set_seed
@@ -19,8 +20,8 @@ def get_imgs(dataset_dir):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--original_path', type=str, default='../dataset/CBSD68/original_png/', help="dataset path")
-    parser.add_argument('--output_path', type=str, default='../dataset/CBSD68/noisy/', help="dataset path")
+    parser.add_argument('--original_path', type=str, default='./dataset/CBSD68/original_png/', help="dataset path")
+    parser.add_argument('--output_path', type=str, default='./dataset/CBSD68/noisy/', help="dataset path")
     parser.add_argument('--seed', type=int, default=666, help="random seed")
     parser.add_argument('--n', type=int, default=1, help="generate noisy images for n times")
     parser.add_argument('--num_val', type=int, default=8, help="x/68 * n imgs for evaluation")
@@ -54,9 +55,9 @@ if __name__ == "__main__":
             noisy_img = noise_mask_image(nor_img, noise_ratio)
             i = int(img_name[2:4])
             if i < num_imgs - args.num_val:
-                noisy_img_title = output_train_path + "/" + str(n_i) + "_" + img_name
+                noisy_img_title = output_train_path + "\\" + str(n_i) + "_" + img_name
             else:
-                noisy_img_title = output_val_path + "/" + str(n_i) + "_" + img_name
+                noisy_img_title = output_val_path + "\\" + str(n_i) + "_" + img_name
                 
             print(f"add noise to {noisy_img_title}", end="\r")
             save_image(noisy_img_title, noisy_img)
