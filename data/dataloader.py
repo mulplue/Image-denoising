@@ -16,8 +16,10 @@ np.set_printoptions(suppress=True, precision=4, linewidth=65535)
 import matplotlib.pyplot as plt
 
 import sys
-sys.path.append('../')
-sys.path.append("E:\Study\Technology\AI\github\Image-denoising")
+from os.path import join, dirname
+sys.path.insert(0, join(dirname(__file__), '..'))
+sys.path.insert(0, join(dirname(__file__), '../../'))
+sys.path.insert(0, join(dirname(__file__), '../../../'))
 
 # print(sys.path)
 from utils.add_noise import noise_mask_image
@@ -56,7 +58,7 @@ class ImageDataset(Dataset):
         self.train_filenames = get_filelist(self.dataset_path+'\\noisy\\'+str(self.index)+'\\train\\')
         self.val_filenames = get_filelist(self.dataset_path+'\\noisy\\'+str(self.index)+'\\val\\')
 
-        
+
     def __getitem__(self, index):
         if not self.eval_mode:
             filename = random.choice(self.train_filenames) # 训练则随机取样 防止局部震荡

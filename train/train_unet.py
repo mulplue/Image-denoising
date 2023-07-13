@@ -40,24 +40,23 @@ parser.add_argument('--batch_size', type=int, default=32, help='size of the batc
 parser.add_argument('--traj_steps', type=int, default=8, help='traj steps')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='adam: weight_decay')
 parser.add_argument('--lr', type=float, default=3e-4, help='adam: learning rate')
-parser.add_argument('--n_cpu', type=float, default=32, help='number of CPU to load data')
-parser.add_argument('--description', type=float, default=32, help='CBSD68 train')
+parser.add_argument('--n_cpu', type=float, default=1, help='number of CPU to load data')
+parser.add_argument('--description', type=str, default='train and test on CBSD68', help='CBSD68 train')
 parser.add_argument('--test_interval', type=int, default=100, help='test interval')
 parser.add_argument('--checkpoint_interval', type=int, default=1000, help='checkpoint_interval')
 parser.add_argument('--save_num', type=int, default=0, help='label for saving')
 
 
 opt = parser.parse_args()
-if opt.test_mode: opt.batch_size = 1
 
 path = './result/'+str(opt.save_num)+'/'
 
 log_path = path+'log/'+opt.dataset_name+'/'
 os.makedirs(path+'saved_models/%s' % opt.dataset_name, exist_ok=True)
 os.makedirs(path+'output/%s' % opt.dataset_name, exist_ok=True)
-if not opt.test_mode:
-    logger = SummaryWriter(log_dir=log_path)
-    write_params(log_path, parser, opt.description)
+
+logger = SummaryWriter(log_dir=log_path)
+write_params(log_path, parser, opt.description)
     
 model = ForwardRemover().to(device)
 criterion = torch.nn.MSELoss().to(device)
