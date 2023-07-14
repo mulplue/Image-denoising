@@ -74,27 +74,27 @@ class UNet(nn.Module):
     def __init__(self, in_channels=3, out_channels=3):
         super(UNet, self).__init__()
         # 定义encoder
-        self.down1 = UNetDown(in_channels, 16, normalize=False)
-        self.down2 = UNetDown(16, 32)
-        self.down3 = UNetDown(32, 64)
-        self.down4 = UNetDown(64, 128, dropout=0.5)
-        self.down5 = UNetDown(128, 256, dropout=0.5)
-        self.down6 = UNetDown(256, 256, dropout=0.5)
-        self.down7 = UNetDown(256, 256, normalize=False, dropout=0.5)
+        self.down1 = UNetDown(in_channels, 4, normalize=False)
+        self.down2 = UNetDown(4, 8)
+        self.down3 = UNetDown(8, 16)
+        self.down4 = UNetDown(16, 32, dropout=0.5)
+        self.down5 = UNetDown(32, 64, dropout=0.5)
+        self.down6 = UNetDown(64, 128, dropout=0.5)
+        self.down7 = UNetDown(128, 128, normalize=False, dropout=0.5)
 
         # 定义decoder
-        self.up1 = UNetUp(256, 256, dropout=0.5)
-        self.up2 = UNetUp(512, 256, dropout=0.5)
-        self.up3 = UNetUp(512, 128, dropout=0.5)
-        self.up4 = UNetUp(256, 64)
-        self.up5 = UNetUp(128, 32)
-        self.up6 = UNetUp(64, 16)
+        self.up1 = UNetUp(128, 128, dropout=0.5)
+        self.up2 = UNetUp(256, 64, dropout=0.5)
+        self.up3 = UNetUp(128, 32, dropout=0.5)
+        self.up4 = UNetUp(64, 16)
+        self.up5 = UNetUp(32, 8)
+        self.up6 = UNetUp(16, 4)
 
         # 定义输出
         self.final = nn.Sequential(
             nn.Upsample(scale_factor=2),
             nn.ZeroPad2d((1, 0, 1, 0)),
-            nn.Conv2d(32, out_channels, 4, padding=1),
+            nn.Conv2d(8, out_channels, 4, padding=1),
             nn.Tanh()
         )
 
@@ -131,7 +131,7 @@ class ForwardRemover(nn.Module):
         Output:
         :return I:4D torch.tensor:(batch_size * RGB * Width * Height)
     """
-    def __init__(self, in_channels=3, out_channels=3, scale=10):
+    def __init__(self, in_channels=3, out_channels=3, scale=1):
         super(ForwardRemover, self).__init__()
         # 定义encoder
         self.model = UNet(in_channels=in_channels, out_channels=out_channels)
@@ -157,7 +157,7 @@ class ResRemover(nn.Module):
         Output:
         :return I:4D torch.tensor:(batch_size * RGB * Width * Height)
     """
-    def __init__(self, in_channels=3, out_channels=3, scale=10):
+    def __init__(self, in_channels=3, out_channels=3, scale=1):
         super(ResRemover, self).__init__()
         # 定义encoder
         self.model = UNet(in_channels=in_channels, out_channels=out_channels)

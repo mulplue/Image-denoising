@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os
+os.environ["CUDA_VISIBLE_DEVICES"]='3'
 import sys
 from os.path import join, dirname
 sys.path.insert(0, join(dirname(__file__), '..'))
@@ -62,7 +64,7 @@ os.makedirs(path+'output/%s' % opt.dataset_name, exist_ok=True)
 logger = SummaryWriter(log_dir=log_path)
 write_params(log_path, parser, opt.description)
     
-model = ForwardRemover().to(device)
+model = ResRemover().to(device)
 L1_criterion = torch.nn.L1Loss().to(device)
 L2_criterion = torch.nn.MSELoss().to(device)
 
@@ -92,7 +94,7 @@ def eval_metric(step):
     l1_loss = L1_criterion(output, batch['label'])
     l2_loss = L2_criterion(output, batch['label'])
     logger.add_scalar('test/L1_loss', l1_loss.item(), step)
-    logger.add_scalar('test/L1_loss', l2_loss.item(), step)
+    logger.add_scalar('test/L2_loss', l2_loss.item(), step)
 
 
     sample = torch.cat((batch['label'].data, batch['image'].data), -1)
