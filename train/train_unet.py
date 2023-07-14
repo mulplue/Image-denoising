@@ -64,7 +64,7 @@ os.makedirs(path+'output/%s' % opt.dataset_name, exist_ok=True)
 logger = SummaryWriter(log_dir=log_path)
 write_params(log_path, parser, opt.description)
     
-model = ResRemover().to(device)
+model = ForwardRemover().to(device)
 L1_criterion = torch.nn.L1Loss().to(device)
 L2_criterion = torch.nn.MSELoss().to(device)
 
@@ -76,10 +76,10 @@ elif opt.loss == 'L1':
 
 optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.weight_decay)
 
-dataset = ImageDataset(dataset_path=r'./dataset/CBSD68',eval_mode=False)
-train_loader = DataLoader(dataset, batch_size=opt.batch_size, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
+dataset = ImageDataset(dataset_path=r'./dataset/CBSD68',eval_mode=False, index=128)
+train_loader = DataLoader(dataset, batch_size=opt.batch_size, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True,)
 
-dataset = ImageDataset(dataset_path=r'./dataset/CBSD68',eval_mode=True)
+dataset = ImageDataset(dataset_path=r'./dataset/CBSD68',eval_mode=True, index=128)
 test_loader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
 eval_samples = iter(test_loader)
 

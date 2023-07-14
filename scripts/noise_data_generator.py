@@ -55,9 +55,9 @@ if __name__ == "__main__":
             noisy_img = noise_mask_image(nor_img, noise_ratio)
             i = int(img_name[2:4])
             if i < num_imgs - args.num_val:
-                noisy_img_title = output_train_path + "\\" + str(n_i) + "_" + img_name
+                noisy_img_title = output_train_path + "/" + str(n_i) + "_" + img_name
             else:
-                noisy_img_title = output_val_path + "\\" + str(n_i) + "_" + img_name
+                noisy_img_title = output_val_path + "/" + str(n_i) + "_" + img_name
                 
             print(f"add noise to {noisy_img_title}", end="\r")
             save_image(noisy_img_title, noisy_img)

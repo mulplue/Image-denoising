@@ -26,7 +26,9 @@ class UNetDown(nn.Module):
         if normalize:   # 是否归一化
             layers.append(nn.InstanceNorm2d(out_size))
 
-        layers.append(nn.LeakyReLU(leaky))    # 激活函数层
+        # layers.append(nn.LeakyReLU(leaky))    # 激活函数层
+        layers.append(nn.Tanh())    # 激活函数层
+
 
         if dropout:   # 是否Dropout
             layers.append(nn.Dropout(dropout))
@@ -48,7 +50,8 @@ class UNetUp(nn.Module):
         super(UNetUp, self).__init__()
         layers = [nn.ConvTranspose2d(in_size, out_size, kernel_size=kernel_size, stride=stride, padding=padding, bias=False),
                   nn.InstanceNorm2d(out_size),
-                  nn.ReLU(inplace=True)]
+                  nn.Tanh()]
+                #   nn.ReLU(inplace=True)]
         if dropout:  # 是否Dropout
             layers.append(nn.Dropout(dropout))
 

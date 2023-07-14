@@ -62,14 +62,14 @@ class ImageDataset(Dataset):
         if not self.eval_mode:
             filename = random.choice(self.train_filenames) # 训练则随机取样 防止局部震荡
             path = self.dataset_path+'/noisy/'+str(self.index)+'/train/'+filename+'.png'
-            noisy_image = cv2.imread(path)
+            noisy_image = cv2.imread(path)[:,:,::-1]
         else:
             filename = random.choice(self.val_filenames) # 训练则随机取样 防止局部震荡
             path = self.dataset_path+'/noisy/'+str(self.index)+'/val/'+filename+'.png'
-            noisy_image = cv2.imread(path)
+            noisy_image = cv2.imread(path)[:,:,::-1]
         filename = filename.split('_')[-1]
         path = self.dataset_path+'/original_png/'+filename+'.png'
-        raw_image = cv2.imread(path)
+        raw_image = cv2.imread(path)[:,:,::-1]
         
 
         # mirror the inputs for data augmentation
@@ -99,7 +99,7 @@ class ImageDataset(Dataset):
         return len(self.train_filenames)+len(self.val_filenames)
     
 if __name__ == '__main__':
-    dataset = ImageDataset(dataset_path=r'/home/wanghejun/Desktop/wanghejun/Image-Denoising/github/Image-denoising/dataset/CBSD68',eval_mode=True)
+    dataset = ImageDataset(dataset_path=r'/home/wanghejun/Desktop/wanghejun/Image-Denoising/github/Image-denoising/dataset/CBSD68',eval_mode=True, index=128)
     test_loader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=1, pin_memory=True,persistent_workers=True)
     # 'E:/Study/Technology/AI/github/Image-denoising/dataset/CBSD68/original_png'
     
@@ -111,8 +111,8 @@ if __name__ == '__main__':
         print("mirror:", batch['mirror'][0])
 
 
-        cv2.imshow("Image", image.permute(1, 2, 0).numpy())
-        cv2.imshow("Label", label.permute(1, 2, 0).numpy())
+        cv2.imshow("Image", image.permute(1, 2, 0).numpy()[:,:,::-1])
+        cv2.imshow("Label", label.permute(1, 2, 0).numpy()[:,:,::-1])
         cv2.waitKey(0)
 
     cv2.destroyAllWindows()
