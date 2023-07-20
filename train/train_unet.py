@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]='3'
+os.environ["CUDA_VISIBLE_DEVICES"]='1'
 import sys
 from os.path import join, dirname
 sys.path.insert(0, join(dirname(__file__), '..'))

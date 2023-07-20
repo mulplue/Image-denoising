@@ -144,6 +144,7 @@ class ForwardRemover(nn.Module):
         x = x/self.scale
         x = self.model(x)
         x = x*self.scale
+        x = nn.Sigmoid()(x)
         return x
 
 
@@ -172,4 +173,5 @@ class ResRemover(nn.Module):
         noise = self.model(x)
         x = x+noise# Plus is equal to minus? For tanh is used
         x = x*self.scale
+        x = nn.Sigmoid()(x)
         return x
