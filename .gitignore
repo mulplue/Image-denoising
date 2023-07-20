@@ -8,7 +8,5 @@
 result/
 
 # dataset
-dataset/CBSD68/noisy/
+dataset/CBSD68/
 
-# figure
-*.png
