@@ -1,6 +1,13 @@
+import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+
+def get_imgs(dataset_dir):
+    img_names = os.listdir(dataset_dir)
+    img_names.sort()
+    imgs = [read_image(os.path.join(dataset_dir, x)) for x in img_names]
+    return img_names, imgs
 
 def read_image(img_path):
     """
