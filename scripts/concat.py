@@ -45,6 +45,11 @@ if __name__ == '__main__':
         noise = cv2.imread("./dataset/test/input/"+png+".png")
         target = cv2.imread("./dataset/test/target/"+png+".png")
 
+        med = cv2.imread("./dataset/test/restore_yuqing_MED/"+png+".png")
+        mean = cv2.imread("./dataset/test/restore_yuqing_MEAN/"+png+".png")
+        maxi = cv2.imread("./dataset/test/restore_yuqing_MAX/"+png+".png")
+
+
         F1 = cv2.imread("./dataset/test/restore_hejunF1/"+png+".png")
         F2 = cv2.imread("./dataset/test/restore_hejunF2/"+png+".png")
         R1 = cv2.imread("./dataset/test/restore_hejunR1/"+png+".png")
@@ -53,7 +58,7 @@ if __name__ == '__main__':
         restormer = cv2.imread("./dataset/test/restore_jiahe/"+png+".png")
         # print(noise.shape)
 
-        concated = np.concatenate((noise, F1, F2, R1, R2, restormer, target), axis=1)
+        concated = np.concatenate((noise, med, mean, maxi, F1, F2, R1, R2, restormer, target), axis=1)
 
         # cv2.imshow("concated", concated)
         os.makedirs("./dataset/test/restore_concat/", exist_ok=True)
